@@ -16,3 +16,8 @@ build/
 .ruff_cache/
 .coverage
 htmlcov/
+
+# Local database files
+data/
+*.db
+*.sqlite

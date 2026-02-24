@@ -2,6 +2,7 @@ from pathlib import Path
 from fastapi import FastAPI
 from .db.init_db import init_db
 from .api.runs import router as runs_router
+from .api.logging import router as logging_router
 
 app = FastAPI(
     title="ML Experiment Tracker",
@@ -15,6 +16,7 @@ def on_startup() -> None:
     init_db()
 
 app.include_router(runs_router)
+app.include_router(logging_router)
 
 @app.get("/health")
 def health_check() -> dict:

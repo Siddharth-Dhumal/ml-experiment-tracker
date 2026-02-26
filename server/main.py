@@ -3,12 +3,19 @@ from fastapi import FastAPI
 from .db.init_db import init_db
 from .api.runs import router as runs_router
 from .api.logging import router as logging_router
+from fastapi.staticfiles import StaticFiles
+from pathlib import Path
+from .ui.pages import router as ui_router
 
 app = FastAPI(
     title="ML Experiment Tracker",
     version="0.1.0",
     description="Local-first experiment tracking API (mini W&B).",
 )
+
+BASE_DIR = Path(__file__).resolve().parent
+app.mount("/static", StaticFiles(directory=str(BASE_DIR / "static")), name="static")
+app.include_router(ui_router)
 
 @app.on_event("startup")
 def on_startup() -> None:

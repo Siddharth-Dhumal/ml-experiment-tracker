@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Run {{ run.id }} - ML Experiment Tracker</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='app.css') }}" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <p><a href="/ui">← Back</a></p>
+
+        <h1>Run {{ run.id }}</h1>
+
+        <div class="card">
+            <div class="row">
+                <div><span class="badge">{{ run.status }}</span></div>
+                <div class="small">Project: <b>{{ run.project }}</b></div>
+                <div class="small">Experiment: <b>{{ run.experiment }}</b></div>
+            </div>
+            <p class="small">Name: <b>{{ run.name }}</b></p>
+            <p class="small">Started: {{ run.started_at }}{% if run.ended_at %} · Ended: {{ run.ended_at }}{% endif %}
+            </p>
+        </div>
+
+        <div class="card">
+            <h2>Params</h2>
+            {% if params|length == 0 %}
+            <p class="small">No params logged yet.</p>
+            {% else %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Key</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in params %}
+                    <tr>
+                        <td>{{ p.key }}</td>
+                        <td><code>{{ p.value }}</code></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% endif %}
+        </div>
+
+        <div class="card" id="chart-card" data-run-id="{{ run.id }}" data-metric-names="{{ metric_names_json|e }}">
+            <h2>Metrics</h2>
+
+            {% if metric_names|length == 0 %}
+            <p class="small">No metrics logged yet. Run the demo script to generate metrics.</p>
+            {% else %}
+            <div class="row">
+                <label class="small">
+                    Metric:
+                    <select id="metricSelect"></select>
+                </label>
+            </div>
+            <canvas id="metricChart" height="110"></canvas>
+            {% endif %}
+        </div>
+
+        <script src="{{ url_for('static', path='run_detail.js') }}"></script>
+    </div>
+</body>
+
+</html>

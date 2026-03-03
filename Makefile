@@ -1,4 +1,4 @@
-.PHONY: install dev test lint
+.PHONY: install dev test lint demo
 
 install:
 	python -m pip install -r requirements.txt -r requirements-dev.txt
@@ -11,3 +11,6 @@ test:
 
 lint:
 	ruff check .
+
+demo:
+	python -m scripts.demo_train

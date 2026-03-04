@@ -17,3 +17,6 @@ class RunRead(BaseModel):
     status: str
     started_at: datetime
     ended_at: Optional[datetime] = None
+
+class RunUpdate(BaseModel):
+    status: Optional[str] = Field(default=None, min_length=1, max_length=30)

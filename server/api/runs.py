@@ -3,7 +3,8 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from ..db.models import Run
 from ..db.session import get_db
-from ..schemas.runs import RunCreate, RunRead
+from ..schemas.runs import RunCreate, RunRead, RunUpdate
+from datetime import datetime
 
 router = APIRouter(prefix="/api/runs", tags=["runs"])
 
@@ -37,4 +38,31 @@ def get_run(run_id: int, db: Session = Depends(get_db)) -> RunRead:
     run = db.query(Run).filter(Run.id == run_id).first()
     if run is None:
         raise HTTPException(status_code=404, detail="Run not found")
+    return RunRead.model_validate(run)
+
+@router.patch("/{run_id}", response_model=RunRead)
+def update_run(run_id: int, payload: RunUpdate, db: Session = Depends(get_db)) -> RunRead:
+    run = db.query(Run).filter(Run.id == run_id).first()
+    if run is None:
+        raise HTTPException(status_code=404, detail="Run not found")
+
+    if payload.status is not None:
+        new_status = payload.status.strip().lower()
+
+        allowed = {"running", "finished", "failed"}
+        if new_status not in allowed:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Invalid status. Allowed: {sorted(allowed)}",
+            )
+
+        run.status = new_status
+
+        if new_status in {"finished", "failed"}:
+            run.ended_at = datetime.utcnow()
+        elif new_status == "running":
+            run.ended_at = None
+
+    db.commit()
+    db.refresh(run)
     return RunRead.model_validate(run)

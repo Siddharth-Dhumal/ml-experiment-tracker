@@ -32,3 +32,11 @@ class MLTrackClient:
 
     def log_metrics(self, run_id: int, metrics: List[Dict[str, Any]]) -> Dict[str, Any]:
         return self.post(f"/api/runs/{run_id}/metrics", metrics)
+
+    def patch(self, path: str, json_body: Any) -> Any:
+        resp = requests.patch(self._url(path), json=json_body, timeout=self.timeout_s)
+        resp.raise_for_status()
+        return resp.json()
+
+    def update_run(self, run_id: int, status: str) -> Dict[str, Any]:
+        return self.patch(f"/api/runs/{run_id}", {"status": status})

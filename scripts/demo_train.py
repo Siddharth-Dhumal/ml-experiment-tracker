@@ -1,6 +1,6 @@
 import random
 import time
-
+ 
 from mltrack import Run
 
 def main() -> None:
@@ -30,6 +30,9 @@ def main() -> None:
         print(f"step={step:02d} loss={loss:.4f} acc={acc:.4f}")
 
         time.sleep(0.2)
+
+    run.finish()
+    print("Run marked as finished.")
 
     print("Done.")
     print("Dashboard:")

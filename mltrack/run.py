@@ -44,3 +44,9 @@ class Run:
     def log_metrics(self, metrics: Dict[str, float], *, step: int) -> None:
         items = [{"name": k, "value": float(v), "step": int(step)} for k, v in metrics.items()]
         self.client.log_metrics(self.id, items)
+
+    def finish(self) -> None:
+        self.client.update_run(self.id, "finished")
+
+    def fail(self) -> None:
+        self.client.update_run(self.id, "failed")

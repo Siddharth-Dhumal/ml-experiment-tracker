@@ -1,9 +1,7 @@
 from datetime import datetime
-from sqlalchemy import Column, DateTime, Integer, String
-from .base import Base
-import json
 from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String, UniqueConstraint
-
+from .base import Base
+    
 class Run(Base):
     __tablename__ = "runs"
 
